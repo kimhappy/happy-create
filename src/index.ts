@@ -2,13 +2,12 @@ import { StoreMutatorIdentifier, StateCreator, create } from 'zustand'
 
 const _map = new Map()
 
-export const createWithKey = <
-  T                                              ,
+export const createWithKey = < T >() => <
+  Key                                            ,
   Mis extends [StoreMutatorIdentifier, unknown][],
   Mos extends [StoreMutatorIdentifier, unknown][],
-  U                                              ,
-  Key
->(kreator: (key: Key) => StateCreator< T, Mis, Mos, U >) => (key: Key) => {
+  U
+>(kreator: (key: Key) => (StateCreator< T, Mis, Mos, U >)) => (key: Key) => {
   if (!_map.has(key)) {
     _map.set(key, create()(kreator(key)))
   }
