@@ -1,16 +1,15 @@
-import { StoreMutatorIdentifier, create } from 'zustand'
-
-type _AddKey< Creator, Key > = (key: Key) => Creator
+import { StoreMutatorIdentifier, StateCreator, create } from 'zustand'
 
 const _map = new Map()
 
 export const createWithKey = <
   Store                                                   ,
   Key                                             = string,
-  Mos extends [StoreMutatorIdentifier, unknown][] = []
->(kreator: _AddKey< Parameters< typeof create< Store, Mos > >[ 0 ], Key >) => (key: Key) => {
+  Mis extends [StoreMutatorIdentifier, unknown][] = []    ,
+  Mos extends [StoreMutatorIdentifier, unknown][] = []    ,
+>(kreator: (key: Key) => StateCreator< Store, Mis, Mos >) => (key: Key) => {
   if (!_map.has(key)) {
-    _map.set(key, create< Store, Mos >((set, get, api) => kreator(key)(set, get, api)))
+    _map.set(key, create< Store >()(kreator(key)))
   }
 
   return _map.get(key)() as Store
